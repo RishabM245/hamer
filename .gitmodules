@@ -2,3 +2,6 @@
 	path = third-party/ViTPose
 	url = https://github.com/ViTAE-Transformer/ViTPose.git
 	branch = main
+[submodule "third-party/third-party/Dino"]
+	path = third-party/third-party/Dino
+	url = https://github.com/RishabM245/dinov2.git
