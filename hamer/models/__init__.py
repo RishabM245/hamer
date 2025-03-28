@@ -4,6 +4,8 @@ from .discriminator import Discriminator
 
 from ..utils.download import cache_url
 from ..configs import CACHE_DIR_HAMER
+from pathlib import Path
+from ..configs import get_config
 
 
 def download_models(folder=CACHE_DIR_HAMER):
@@ -30,8 +32,6 @@ def download_models(folder=CACHE_DIR_HAMER):
 
 DEFAULT_CHECKPOINT=f'{CACHE_DIR_HAMER}/hamer_ckpts/checkpoints/hamer.ckpt'
 def load_hamer(checkpoint_path=DEFAULT_CHECKPOINT):
-    from pathlib import Path
-    from ..configs import get_config
     model_cfg = str(Path(checkpoint_path).parent.parent / 'model_config.yaml')
     model_cfg = get_config(model_cfg, update_cachedir=True)
 
@@ -48,5 +48,5 @@ def load_hamer(checkpoint_path=DEFAULT_CHECKPOINT):
         model_cfg.MODEL.BACKBONE.pop('PRETRAINED_WEIGHTS')
         model_cfg.freeze()
 
-    model = HAMER.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
-    return model, model_cfg
+    # model = HAMER.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    return model_cfg
