@@ -26,6 +26,7 @@ class MANOTransformerDecoderHead(nn.Module):
         npose = self.joint_rep_dim * (cfg.MANO.NUM_HAND_JOINTS + 1)
         self.npose = npose
         self.input_is_mean_shape = cfg.MODEL.MANO_HEAD.get('TRANSFORMER_INPUT', 'zero') == 'mean_shape'
+        # print(f"The value of npose is {npose}")
         transformer_args = dict(
             num_tokens=1,
             token_dim=(npose + 10 + 3) if self.input_is_mean_shape else 1,
@@ -58,7 +59,7 @@ class MANOTransformerDecoderHead(nn.Module):
 
         batch_size = x.shape[0]
         # vit pretrained backbone is channel-first. Change to token-first
-        x = einops.rearrange(x, 'b c h w -> b (h w) c')
+        # x = einops.rearrange(x, 'b c h w -> b (h w) c')
 
         init_hand_pose = self.init_hand_pose.expand(batch_size, -1)
         init_betas = self.init_betas.expand(batch_size, -1)

@@ -31,6 +31,7 @@ class HAMER(pl.LightningModule):
         self.cfg = cfg
         # Create backbone feature extractor
         self.backbone = create_backbone(cfg)
+
         if cfg.MODEL.BACKBONE.get('PRETRAINED_WEIGHTS', None):
             log.info(f'Loading backbone weights from {cfg.MODEL.BACKBONE.PRETRAINED_WEIGHTS}')
             self.backbone.load_state_dict(torch.load(cfg.MODEL.BACKBONE.PRETRAINED_WEIGHTS, map_location='cpu')['state_dict'])
@@ -69,6 +70,29 @@ class HAMER(pl.LightningModule):
         all_params += list(self.backbone.parameters())
         return all_params
 
+
+    def run_backbone(self, x):
+        with torch.no_grad():
+            # print(f"Shape of the input image is {x.shape}")
+            x = self.backbone.patch_embed(x)
+            # print(f"Shape after patch_embed is {x.shape}")
+            cls_token = self.backbone.cls_token
+            # print(f"Shape of the cls_token is {cls_token.shape}")
+            x = torch.cat((cls_token, x), dim=1)
+            # print(f"Shape after concatenating cls_token is {x.shape}")
+            pos_emb = self.backbone.pos_embed
+            # print(f"Shape of the positional embedding is {pos_emb.shape}")
+            x = x + pos_emb
+            # print(f"Shape after adding the positional embedding is {x.shape}")
+            for blk in self.backbone.blocks:
+                x = blk(x)
+            # print(f"Shape after passing through all 24 transformer blocks is {x.shape}")
+            x = self.backbone.norm(x)
+            # print(f"Shape after applying the norm layer {x.shape}")
+            x = self.backbone.head(x)
+            # print(f"Shape after applying the final layer {x.shape}")
+        return x
+
     def configure_optimizers(self) -> Tuple[torch.optim.Optimizer, torch.optim.Optimizer]:
         """
         Setup model and distriminator Optimizers
@@ -102,7 +126,7 @@ class HAMER(pl.LightningModule):
 
         # Compute conditioning features using the backbone
         # if using ViT backbone, we need to use a different aspect ratio
-        conditioning_feats = self.backbone(x[:,:,:,32:-32])
+        conditioning_feats = self.run_backbone(x)
 
         pred_mano_params, pred_cam, _ = self.mano_head(conditioning_feats)
 
