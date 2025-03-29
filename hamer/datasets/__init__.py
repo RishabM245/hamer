@@ -64,7 +64,7 @@ class HAMERDataModule(pl.LightningDataModule):
             cfg (CfgNode): Config file as a yacs CfgNode containing necessary dataset info.
         """
         if self.train_dataset == None:
-            self.train_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=True).with_epoch(100_000).shuffle(4000)
+            self.train_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=True).with_epoch(100).shuffle(10)
             self.val_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=False).shuffle(4000)
             self.mocap_dataset = MoCapDataset(**to_lower(self.dataset_cfg[self.cfg.DATASETS.MOCAP]))
 
@@ -74,8 +74,9 @@ class HAMERDataModule(pl.LightningDataModule):
         Returns:
             Dict: Dictionary containing image and mocap data dataloaders
         """
-        train_dataloader = torch.utils.data.DataLoader(self.train_dataset, self.cfg.TRAIN.BATCH_SIZE, drop_last=True, num_workers=self.cfg.GENERAL.NUM_WORKERS, prefetch_factor=self.cfg.GENERAL.PREFETCH_FACTOR)
+        # train_dataloader = torch.utils.data.DataLoader(self.train_dataset, self.cfg.TRAIN.BATCH_SIZE, drop_last=True, num_workers=self.cfg.GENERAL.NUM_WORKERS, prefetch_factor=self.cfg.GENERAL.PREFETCH_FACTOR)
         mocap_dataloader = torch.utils.data.DataLoader(self.mocap_dataset, self.cfg.TRAIN.NUM_TRAIN_SAMPLES * self.cfg.TRAIN.BATCH_SIZE, shuffle=True, drop_last=True, num_workers=1)
+        train_dataloader = torch.utils.data.DataLoader(self.train_dataset, self.cfg.TRAIN.BATCH_SIZE, drop_last=True, num_workers=0, prefetch_factor=None)
         return {'img': train_dataloader, 'mocap': mocap_dataloader}
 
     def val_dataloader(self) -> torch.utils.data.DataLoader:

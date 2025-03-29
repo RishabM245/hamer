@@ -23,7 +23,7 @@ TRAIN:
   SMPL_PARAM_NOISE_RATIO: 0.005
 
 MODEL:
-  IMAGE_SIZE: 256
+  IMAGE_SIZE: 518
   IMAGE_MEAN: [0.485, 0.456, 0.406]
   IMAGE_STD: [0.229, 0.224, 0.225]
   BACKBONE:
@@ -40,7 +40,7 @@ MODEL:
       dropout: 0.0
       emb_dropout: 0.0
       norm: layer
-      context_dim: 1024
+      context_dim: 768
 
 LOSS_WEIGHTS:
   KEYPOINTS_3D: 0.05

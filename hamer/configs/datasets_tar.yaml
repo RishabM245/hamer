@@ -1,7 +1,7 @@
 FREIHAND-TRAIN:
     TYPE: ImageDataset
-    URLS: hamer_training_data/dataset_tars/freihand-train/{000000..000130}.tar
-    epoch_size: 130_240
+    URLS: hamer_training_data/dataset_tars/freihand-train/{000000..000006}.tar
+    epoch_size: 1000
 INTERHAND26M-TRAIN:
     TYPE: ImageDataset
     URLS: hamer_training_data/dataset_tars/interhand26m-train/{000000..001056}.tar
