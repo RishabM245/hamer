@@ -8,6 +8,6 @@ hydra:
     timeout_min: 10_080   # 7 days
     nodes: 1
     tasks_per_node: ${trainer.devices}
-    cpus_per_task: 6
+    cpus_per_task: 1
     gpus_per_node: ${trainer.devices}
     name: hamer

@@ -5,25 +5,25 @@ defaults:
 DATASETS:
   TRAIN: 
     FREIHAND-TRAIN:
-      WEIGHT: 0.25
+      WEIGHT: 1
     INTERHAND26M-TRAIN:
-      WEIGHT: 0.25
+      WEIGHT: 0
     MTC-TRAIN:
-      WEIGHT: 0.1
+      WEIGHT: 0
     RHD-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
     COCOW-TRAIN:
-      WEIGHT: 0.1
+      WEIGHT: 0
     HALPE-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
     MPIINZSL-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
     HO3D-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
     H2O3D-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
     DEX-TRAIN:
-      WEIGHT: 0.05
+      WEIGHT: 0
   VAL:
     FREIHAND-TRAIN:
       WEIGHT: 1.0
