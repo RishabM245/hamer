@@ -99,7 +99,6 @@ class CrossAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
         context_dim = default(context_dim, dim)
-        print(context_dim)
         self.to_kv = nn.Linear(context_dim, inner_dim * 2, bias=False)
         self.to_q = nn.Linear(dim, inner_dim, bias=False)
 

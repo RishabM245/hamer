@@ -4,7 +4,7 @@ from typing import Any, Dict, Mapping, Tuple
 
 from yacs.config import CfgNode
 
-# from ..utils import SkeletonRenderer, MeshRenderer
+from ..utils import SkeletonRenderer, MeshRenderer
 from ..utils.geometry import aa_to_rotmat, perspective_projection
 from ..utils.pylogger import get_pylogger
 from .backbones import create_backbone
@@ -17,7 +17,7 @@ log = get_pylogger(__name__)
 
 class HAMER(pl.LightningModule):
 
-    def __init__(self, cfg: CfgNode, init_renderer: bool = False):
+    def __init__(self, cfg: CfgNode, init_renderer: bool = True):
         """
         Setup HAMER model
         Args:
@@ -55,12 +55,12 @@ class HAMER(pl.LightningModule):
         # Buffer that shows whetheer we need to initialize ActNorm layers
         self.register_buffer('initialized', torch.tensor(False))
         # Setup renderer for visualization
-        # if init_renderer:
-        #     self.renderer = SkeletonRenderer(self.cfg)
-        #     self.mesh_renderer = MeshRenderer(self.cfg, faces=self.mano.faces)
-        # else:
-        self.renderer = None
-        self.mesh_renderer = None
+        if init_renderer:
+            self.renderer = SkeletonRenderer(self.cfg)
+            self.mesh_renderer = MeshRenderer(self.cfg, faces=self.mano.faces)
+        else:
+            self.renderer = None
+            self.mesh_renderer = None
 
         # Disable automatic optimization since we use adversarial training
         self.automatic_optimization = False
@@ -76,7 +76,7 @@ class HAMER(pl.LightningModule):
             # print(f"Shape of the input image is {x.shape}")
             x = self.backbone.patch_embed(x)
             # print(f"Shape after patch_embed is {x.shape}")
-            cls_token = self.backbone.cls_token
+            cls_token = self.backbone.cls_token.expand(x.shape[0], -1, -1)
             # print(f"Shape of the cls_token is {cls_token.shape}")
             x = torch.cat((cls_token, x), dim=1)
             # print(f"Shape after concatenating cls_token is {x.shape}")
@@ -256,7 +256,7 @@ class HAMER(pl.LightningModule):
         pred_keypoints_3d = output['pred_keypoints_3d'].detach().reshape(batch_size, -1, 3)
 
         # We render the skeletons instead of the full mesh because rendering a lot of meshes will make the training slow.
-        #predictions = self.renderer(pred_keypoints_3d[:num_images],
+        # predictions = self.renderer(pred_keypoints_3d[:num_images],
         #                            gt_keypoints_3d[:num_images],
         #                            2 * gt_keypoints_2d[:num_images],
         #                            images=images[:num_images],

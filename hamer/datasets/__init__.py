@@ -64,8 +64,8 @@ class HAMERDataModule(pl.LightningDataModule):
             cfg (CfgNode): Config file as a yacs CfgNode containing necessary dataset info.
         """
         if self.train_dataset == None:
-            self.train_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=True).with_epoch(100).shuffle(10)
-            self.val_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=False).shuffle(4000)
+            self.train_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=True).with_epoch(10).shuffle(10)
+            self.val_dataset = MixedWebDataset(self.cfg, self.dataset_cfg, train=False).shuffle(10)
             self.mocap_dataset = MoCapDataset(**to_lower(self.dataset_cfg[self.cfg.DATASETS.MOCAP]))
 
     def train_dataloader(self) -> Dict:
